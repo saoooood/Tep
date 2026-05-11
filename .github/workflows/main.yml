@@ -1,19 +1,16 @@
 name: Saeedthon_24_7
 
-# البوت يشتغل عند رفع أي كود جديد أو يدوياً
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
   schedule:
-    # إعادة تشغيل تلقائي كل 6 ساعات لضمان عدم التوقف
     - cron: '0 */6 * * *'
 
 jobs:
   run-saeedthon:
     runs-on: ubuntu-latest
     
-    # منع تشغيل أكثر من نسخة في نفس الوقت
     concurrency:
       group: saeedthon-group
       cancel-in-progress: true
@@ -25,25 +22,30 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          # تم التحديث لنسخة 3.10 لتعمل المكاتب بدون مشاكل
+          python-version: '3.10'
 
       - name: Install Essential Tools
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
+      - name: Install Python Dependencies
+        run: |
+          # تثبيت المكاتب الأساسية قبل تشغيل السكريبت
+          python -m pip install --upgrade pip
+          pip install telethon instagrapi neonize-bin Flask gunicorn heroku3 requests
+          # إذا كان ملف requirements.txt موجوداً، سيثبت البقية
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
       - name: Run Saeedthon
         env:
-          # ربط الأسرار المخفية من GitHub بالبوت
           INSTA_USER: ${{ secrets.INSTA_USER }}
           INSTA_PASS: ${{ secrets.INSTA_PASS }}
           WA_NUMBER: ${{ secrets.WA_NUMBER }}
           WA_SESSION: ${{ secrets.WA_SESSION }}
           TG_SESSION: ${{ secrets.TG_SESSION }}
         run: |
-          # تشغيل ملف المُشغل الأساسي
           python Saeedthon.py
         
-    # البوت يشتغل لمدة 6 ساعات ثم يعيد التشغيل تلقائياً
     timeout-minutes: 350
-
