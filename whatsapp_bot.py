@@ -1,23 +1,27 @@
-import time
+import os
+import base64
 from neonize.client import NewClient
 from neonize.events import MessageEvent
-from processor import handle_logic # استدعاء المعالج المركزي
+from processor import handle_logic
+
+# جلب البيانات من الأسرار بشكل مخفي
+MY_NUMBER = os.getenv("WA_NUMBER")
+WA_SESSION_BASE64 = os.getenv("WA_SESSION")
 
 def on_message(client, event: MessageEvent):
-    # الحصول على نص الرسالة
     text = event.message.conversation or event.message.extendedTextMessage.text
-    
-    # إرسال النص للمعالج (سعيد ثون)
     response = handle_logic(text)
-    
-    # إذا وجد المعالج رداً، يتم إرساله للواتساب
     if response:
         client.send_message(event.info.sender, response)
 
 def start_whatsapp():
-    print("🟢 جاري تشغيل سعيد ثون على واتساب...")
-    # هنا ستحتاج لمسح الكود (QR Code) عند أول تشغيل في سجلات (Logs) الـ GitHub
-    client = NewClient("db.sqlite3")
+    # إعادة تكوين ملف الستيشن من النص المشفر في GitHub Secrets
+    if WA_SESSION_BASE64:
+        with open("session.db", "wb") as f:
+            f.write(base64.b64decode(WA_SESSION_BASE64))
+    
+    print(f"🟢 سعيد ثون شغال على الواتساب للرقم: {MY_NUMBER}")
+    client = NewClient("session.db")
     client.add_event_handler(MessageEvent, on_message)
     client.connect()
 
