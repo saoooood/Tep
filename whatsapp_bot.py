@@ -4,7 +4,6 @@ from neonize.client import NewClient
 from neonize.events import MessageEvent
 from processor import handle_logic
 
-# جلب البيانات من الأسرار بشكل مخفي
 MY_NUMBER = os.getenv("WA_NUMBER")
 WA_SESSION_BASE64 = os.getenv("WA_SESSION")
 
@@ -15,12 +14,11 @@ def on_message(client, event: MessageEvent):
         client.send_message(event.info.sender, response)
 
 def start_whatsapp():
-    # إعادة تكوين ملف الستيشن من النص المشفر في GitHub Secrets
     if WA_SESSION_BASE64:
         with open("session.db", "wb") as f:
             f.write(base64.b64decode(WA_SESSION_BASE64))
     
-    print(f"🟢 سعيد ثون شغال على الواتساب للرقم: {MY_NUMBER}")
+    print(f"🟢 واتساب شغال للرقم: {MY_NUMBER}")
     client = NewClient("session.db")
     client.add_event_handler(MessageEvent, on_message)
     client.connect()
