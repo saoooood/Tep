@@ -47,6 +47,9 @@ jobs:
           WA_NUMBER: ${{ secrets.WA_NUMBER }}
           WA_SESSION: ${{ secrets.WA_SESSION }}
           TG_SESSION: ${{ secrets.TG_SESSION }}
+          # إضافة التوكن هنا
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          DATABASE_URL: sqlite:///saeed.db
         run: |
           python Saeedthon.py
         
