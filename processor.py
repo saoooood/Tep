@@ -53,6 +53,7 @@ def handle_logic(text):
         return "✅ **سعيد ثون [Saeedthon]**\nالبوت شغال بأعلى كفاءة لعيون الذبحاني! 🚀"
 
     elif cmd == ".الوقت":
+        # عرض الوقت بتوقيت صنعاء كما تحب
         now = datetime.datetime.now().strftime("%I:%M %p")
         return f"⏰ الوقت الحالي في صنعاء: **{now}**"
 
